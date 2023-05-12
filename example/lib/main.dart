@@ -4,6 +4,7 @@ import 'package:example/pages/dialogs_page.dart';
 import 'package:example/pages/fields_page.dart';
 import 'package:example/pages/indicators_page.dart';
 import 'package:example/pages/selectors_page.dart';
+import 'package:example/pages/sliver_toolbar_page.dart';
 import 'package:example/pages/tabview_page.dart';
 import 'package:example/pages/toolbar_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,15 @@ import 'package:provider/provider.dart';
 
 import 'theme.dart';
 
-void main() {
+/// This method initializes macos_window_utils and styles the window.
+Future<void> _configureMacosWindowUtils() async {
+  const config = MacosWindowUtilsConfig();
+  await config.apply();
+}
+
+Future<void> main() async {
+  await _configureMacosWindowUtils();
+
   runApp(const MacosUIGalleryApp());
 }
 
@@ -54,22 +63,25 @@ class _WidgetGalleryState extends State<WidgetGallery> {
 
   late final searchFieldController = TextEditingController();
 
-  final List<Widget> pages = [
-    CupertinoTabView(
-      builder: (_) => const ButtonsPage(),
-    ),
-    const IndicatorsPage(),
-    const FieldsPage(),
-    const ColorsPage(),
-    const Center(
-      child: MacosIcon(
-        CupertinoIcons.add,
-      ),
-    ),
-    const DialogsPage(),
-    const ToolbarPage(),
-    const SelectorsPage(),
-    const TabViewPage(),
+  final List<Widget Function(bool)> pageBuilders = [
+    (bool isVisible) => CupertinoTabView(
+          builder: (_) => const ButtonsPage(),
+        ),
+    (bool isVisible) => const IndicatorsPage(),
+    (bool isVisible) => const FieldsPage(),
+    (bool isVisible) => const ColorsPage(),
+    (bool isVisible) => const Center(
+          child: MacosIcon(
+            CupertinoIcons.add,
+          ),
+        ),
+    (bool isVisible) => const DialogsPage(),
+    (bool isVisible) => const ToolbarPage(),
+    (bool isVisible) => SliverToolbarPage(
+          isVisible: isVisible,
+        ),
+    (bool isVisible) => const TabViewPage(),
+    (bool isVisible) => const SelectorsPage(),
   ];
 
   @override
@@ -171,11 +183,11 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             ],
           ),
           minWidth: 200,
-          builder: (context, controller) {
+          builder: (context, scrollController) {
             return SidebarItems(
               currentIndex: pageIndex,
               onChanged: (i) => setState(() => pageIndex = i),
-              scrollController: controller,
+              scrollController: scrollController,
               itemSize: SidebarItemSize.large,
               items: [
                 const SidebarItem(
@@ -234,8 +246,30 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                   label: Text('Dialogs & Sheets'),
                 ),
                 const SidebarItem(
-                  leading: MacosIcon(CupertinoIcons.macwindow),
-                  label: Text('Toolbar'),
+                  leading: MacosImageIcon(
+                    AssetImage(
+                      'assets/sf_symbols/macwindow.on.rectangle_2x.png',
+                    ),
+                  ),
+                  label: Text('Layout'),
+                  disclosureItems: [
+                    SidebarItem(
+                      leading: MacosIcon(CupertinoIcons.macwindow),
+                      label: Text('Toolbar'),
+                    ),
+                    SidebarItem(
+                      leading: MacosImageIcon(
+                        AssetImage(
+                          'assets/sf_symbols/menubar.rectangle_2x.png',
+                        ),
+                      ),
+                      label: Text('SliverToolbar'),
+                    ),
+                    SidebarItem(
+                      leading: MacosIcon(CupertinoIcons.uiwindow_split_2x1),
+                      label: Text('TabView'),
+                    ),
+                  ],
                 ),
                 const SidebarItem(
                   leading: MacosImageIcon(
@@ -244,10 +278,6 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                     ),
                   ),
                   label: Text('Selectors'),
-                ),
-                const SidebarItem(
-                  leading: MacosIcon(CupertinoIcons.uiwindow_split_2x1),
-                  label: Text('TabView'),
                 ),
               ],
             );
@@ -263,7 +293,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
           minWidth: 200,
           maxWidth: 300,
           shownByDefault: false,
-          builder: (context, scrollController) {
+          builder: (context, _) {
             return const Center(
               child: Text('End Sidebar'),
             );
@@ -271,7 +301,14 @@ class _WidgetGalleryState extends State<WidgetGallery> {
         ),
         child: IndexedStack(
           index: pageIndex,
-          children: pages,
+          children: pageBuilders
+              .asMap()
+              .map((index, builder) {
+                final widget = builder(index == pageIndex);
+                return MapEntry(index, widget);
+              })
+              .values
+              .toList(),
         ),
       ),
     );

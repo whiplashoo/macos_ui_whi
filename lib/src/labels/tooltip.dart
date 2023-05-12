@@ -170,7 +170,7 @@ class _MacosTooltipState extends State<MacosTooltip>
     final OverlayState overlayState = Overlay.of(
       context,
       debugRequiredFor: widget,
-    )!;
+    );
 
     final RenderBox box = context.findRenderObject()! as RenderBox;
     Offset target = box.localToGlobal(
@@ -236,6 +236,12 @@ class _MacosTooltipState extends State<MacosTooltip>
     super.deactivate();
   }
 
+  void _handleLongPress() {
+    _longPressActivated = true;
+    final bool tooltipCreated = ensureTooltipVisible();
+    if (tooltipCreated) Feedback.forLongPress(context);
+  }
+
   @override
   void dispose() {
     GestureBinding.instance.pointerRouter
@@ -247,16 +253,9 @@ class _MacosTooltipState extends State<MacosTooltip>
     super.dispose();
   }
 
-  void _handleLongPress() {
-    _longPressActivated = true;
-    final bool tooltipCreated = ensureTooltipVisible();
-    if (tooltipCreated) Feedback.forLongPress(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMacosTheme(context));
-    assert(Overlay.of(context, debugRequiredFor: widget) != null);
     final tooltipTheme = MacosTooltipTheme.of(context);
 
     height = tooltipTheme.height!;
