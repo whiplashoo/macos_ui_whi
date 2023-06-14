@@ -3,8 +3,8 @@ import 'package:macos_ui/macos_ui.dart';
 import 'package:macos_ui/src/library.dart';
 
 CupertinoDynamicColor _kScrollbarColor = CupertinoDynamicColor.withBrightness(
-  color: MacosColors.systemGrayColor.color.withOpacity(.8),
-  darkColor: MacosColors.systemGrayColor.darkColor.withOpacity(.8),
+  color: MacosColors.systemGrayColor.color.withOpacity(0.8),
+  darkColor: MacosColors.systemGrayColor.darkColor.withOpacity(0.8),
 );
 
 /// Applies a macOS-style theme to descendant macOS widgets.
@@ -213,9 +213,10 @@ class MacosThemeData with Diagnosticable {
     final Brightness _brightness = brightness ?? Brightness.light;
     final bool isDark = _brightness == Brightness.dark;
     primaryColor ??= MacosColors.controlAccentColor;
+
     canvasColor ??= isDark
-        ? CupertinoColors.systemBackground.darkElevatedColor
-        : CupertinoColors.systemBackground;
+        ? const Color.fromRGBO(40, 40, 40, 1.0)
+        : const Color.fromRGBO(246, 246, 246, 1.0);
     typography ??= MacosTypography(
       color: _brightness == Brightness.light
           ? CupertinoColors.black
