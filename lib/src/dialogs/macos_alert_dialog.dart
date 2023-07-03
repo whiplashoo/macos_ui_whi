@@ -42,6 +42,7 @@ class MacosAlertDialog extends StatelessWidget {
     this.secondaryButton,
     this.horizontalActions = true,
     this.suppress,
+    this.maxWidth,
   });
 
   /// This should be your application's icon.
@@ -74,6 +75,8 @@ class MacosAlertDialog extends StatelessWidget {
   ///
   /// Defaults to `true`.
   final bool? horizontalActions;
+
+  final double? maxWidth;
 
   /// A widget to allow users to suppress alerts of this type.
   ///
@@ -153,8 +156,8 @@ class MacosAlertDialog extends StatelessWidget {
           borderRadius: _kDialogBorderRadius,
         ),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 260,
+          constraints: BoxConstraints(
+            maxWidth: maxWidth ?? 260,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
