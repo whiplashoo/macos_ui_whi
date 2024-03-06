@@ -143,6 +143,7 @@ class MacosAlertDialog extends StatelessWidget {
         CupertinoColors.systemGrey6.color,
         MacosColors.controlBackgroundColor.darkColor,
       ),
+      surfaceTintColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: _kDialogBorderRadius,
       ),
