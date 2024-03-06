@@ -217,16 +217,12 @@ class MacosThemeData with Diagnosticable {
     canvasColor ??= isDark
         ? const Color.fromRGBO(40, 40, 40, 1.0)
         : const Color.fromRGBO(246, 246, 246, 1.0);
-    typography ??= MacosTypography(
-      color: _brightness == Brightness.light
-          ? CupertinoColors.black
-          : CupertinoColors.white,
-    );
+    typography ??=
+        isDark ? MacosTypography.lightOpaque() : MacosTypography.darkOpaque();
     pushButtonTheme ??= PushButtonThemeData(
       color: primaryColor,
-      secondaryColor: isDark
-          ? const Color.fromRGBO(56, 56, 56, 1.0)
-          : const Color.fromRGBO(218, 218, 223, 1.0),
+      secondaryColor:
+          isDark ? const Color.fromRGBO(110, 109, 112, 1.0) : MacosColors.white,
       disabledColor: isDark
           ? const Color.fromRGBO(255, 255, 255, 0.1)
           : const Color.fromRGBO(244, 245, 245, 1.0),
@@ -518,8 +514,7 @@ class MacosThemeData with Diagnosticable {
       typography: MacosTypography.lerp(a.typography, b.typography, t),
       helpButtonTheme:
           HelpButtonThemeData.lerp(a.helpButtonTheme, b.helpButtonTheme, t),
-      pushButtonTheme:
-          PushButtonThemeData.lerp(a.pushButtonTheme, b.pushButtonTheme, t),
+      pushButtonTheme: a.pushButtonTheme,
       tooltipTheme:
           MacosTooltipThemeData.lerp(a.tooltipTheme, b.tooltipTheme, t),
       visualDensity: VisualDensity.lerp(a.visualDensity, b.visualDensity, t),
@@ -585,7 +580,7 @@ class MacosThemeData with Diagnosticable {
       canvasColor: canvasColor ?? this.canvasColor,
       dividerColor: dividerColor ?? this.dividerColor,
       typography: this.typography.merge(typography),
-      pushButtonTheme: this.pushButtonTheme.merge(pushButtonTheme),
+      pushButtonTheme: this.pushButtonTheme,
       helpButtonTheme: this.helpButtonTheme.merge(helpButtonTheme),
       tooltipTheme: this.tooltipTheme.merge(tooltipTheme),
       visualDensity: visualDensity ?? this.visualDensity,
@@ -609,7 +604,7 @@ class MacosThemeData with Diagnosticable {
       canvasColor: other.canvasColor,
       dividerColor: other.dividerColor,
       typography: typography.merge(other.typography),
-      pushButtonTheme: pushButtonTheme.merge(other.pushButtonTheme),
+      pushButtonTheme: pushButtonTheme,
       helpButtonTheme: helpButtonTheme.merge(other.helpButtonTheme),
       tooltipTheme: tooltipTheme.merge(other.tooltipTheme),
       visualDensity: other.visualDensity,
