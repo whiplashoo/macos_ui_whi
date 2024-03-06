@@ -45,6 +45,7 @@ class MacosAlertDialog extends StatelessWidget {
     this.secondaryButton,
     this.horizontalActions = true,
     this.suppress,
+    this.maxWidth,
   });
 
   /// This should be your application's icon.
