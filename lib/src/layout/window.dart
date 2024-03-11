@@ -84,7 +84,6 @@ class MacosWindow extends StatefulWidget {
 }
 
 class _MacosWindowState extends State<MacosWindow> {
-  var _sidebarScrollController = ScrollController();
   var _endSidebarScrollController = ScrollController();
   double _sidebarWidth = 0.0;
   double _sidebarDragStartWidth = 0.0;
@@ -111,7 +110,6 @@ class _MacosWindowState extends State<MacosWindow> {
         ? GlobalWallpaperTintingSettings.disableWallpaperTinting()
         : GlobalWallpaperTintingSettings.allowWallpaperTinting();
 
-    _addSidebarScrollControllerListenerIfNeeded();
     _addEndSidebarScrollControllerListenerIfNeeded();
   }
 
@@ -129,11 +127,6 @@ class _MacosWindowState extends State<MacosWindow> {
       if (sidebar.maxWidth! < _sidebarWidth) {
         _sidebarWidth = sidebar.maxWidth!;
       }
-    }
-    if (sidebar?.key != old.sidebar?.key) {
-      _sidebarScrollController.dispose();
-      _sidebarScrollController = ScrollController();
-      _addSidebarScrollControllerListenerIfNeeded();
     }
     final endSidebar = widget.endSidebar;
     if (endSidebar == null) {
@@ -154,12 +147,6 @@ class _MacosWindowState extends State<MacosWindow> {
     }
   }
 
-  void _addSidebarScrollControllerListenerIfNeeded() {
-    if (widget.sidebar?.builder != null) {
-      _sidebarScrollController.addListener(() => setState(() {}));
-    }
-  }
-
   void _addEndSidebarScrollControllerListenerIfNeeded() {
     if (widget.endSidebar?.builder != null) {
       _endSidebarScrollController.addListener(() => setState(() {}));
@@ -168,7 +155,6 @@ class _MacosWindowState extends State<MacosWindow> {
 
   @override
   void dispose() {
-    _sidebarScrollController.dispose();
     _endSidebarScrollController.dispose();
 
     super.dispose();
@@ -281,12 +267,6 @@ class _MacosWindowState extends State<MacosWindow> {
                                 const SizedBox(height: 12),
                               ] else
                                 const SizedBox.shrink(),
-                              if (_sidebarScrollController.hasClients &&
-                                  _sidebarScrollController.offset > 0.0)
-                                Divider(
-                                    thickness: 1,
-                                    height: 1,
-                                    color: dividerColor),
                               if (sidebar.top != null &&
                                   constraints.maxHeight > 81)
                                 Padding(
@@ -296,14 +276,10 @@ class _MacosWindowState extends State<MacosWindow> {
                                   child: sidebar.top!,
                                 ),
                               Expanded(
-                                child: MacosScrollbar(
-                                  controller: _sidebarScrollController,
-                                  child: Padding(
-                                    padding: sidebar.padding,
-                                    child: sidebar.builder(
-                                      context,
-                                      _sidebarScrollController,
-                                    ),
+                                child: Padding(
+                                  padding: sidebar.padding,
+                                  child: sidebar.builder(
+                                    context,
                                   ),
                                 ),
                               ),
@@ -336,12 +312,6 @@ class _MacosWindowState extends State<MacosWindow> {
                                   const SizedBox(height: 12),
                                 ] else
                                   const SizedBox.shrink(),
-                                if (_sidebarScrollController.hasClients &&
-                                    _sidebarScrollController.offset > 0.0)
-                                  Divider(
-                                      thickness: 1,
-                                      height: 1,
-                                      color: dividerColor),
                                 if (sidebar.top != null &&
                                     constraints.maxHeight > 81)
                                   Padding(
@@ -351,14 +321,10 @@ class _MacosWindowState extends State<MacosWindow> {
                                     child: sidebar.top!,
                                   ),
                                 Expanded(
-                                  child: MacosScrollbar(
-                                    controller: _sidebarScrollController,
-                                    child: Padding(
-                                      padding: sidebar.padding,
-                                      child: sidebar.builder(
-                                        context,
-                                        _sidebarScrollController,
-                                      ),
+                                  child: Padding(
+                                    padding: sidebar.padding,
+                                    child: sidebar.builder(
+                                      context,
                                     ),
                                   ),
                                 ),
@@ -512,7 +478,6 @@ class _MacosWindowState extends State<MacosWindow> {
                               padding: endSidebar.padding,
                               child: endSidebar.builder(
                                 context,
-                                _endSidebarScrollController,
                               ),
                             ),
                           ),

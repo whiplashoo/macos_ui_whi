@@ -145,7 +145,9 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             ],
           ),
           minWidth: 200,
-          builder: (context, scrollController) {
+          builder: (
+            context,
+          ) {
             return SidebarItems(
               currentIndex: pageIndex,
               onChanged: (i) {
@@ -159,7 +161,6 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                   setState(() => pageIndex = i);
                 }
               },
-              scrollController: scrollController,
               itemSize: SidebarItemSize.large,
               items: const [
                 SidebarItem(
@@ -249,7 +250,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
           minWidth: 200,
           maxWidth: 300,
           shownByDefault: false,
-          builder: (context, _) {
+          builder: (context) {
             return const Center(
               child: Text('End Sidebar'),
             );
